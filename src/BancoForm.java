@@ -1,5 +1,4 @@
 import javax.swing.*;
-import conexion.ConexionBD;
 import java.sql.*;
 
 public class BancoForm {
@@ -25,34 +24,63 @@ public class BancoForm {
         this.saldo = saldoInicial;
         this.usuario = usuario;
 
+        Cliente.setText("Cliente:");
+        SaldoSiponible.setText("Saldo disponible:");
+
         clientevalor.setText(nombre);
         actualizarSaldo();
 
         // DEPÓSITO
         depósitoButton.addActionListener(e -> {
-            String valorStr = JOptionPane.showInputDialog("Ingrese valor a depositar:");
+            String valorStr = JOptionPane.showInputDialog(
+                    null,
+                    "Ingrese valor a depositar:",
+                    "Depósito",
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (valorStr == null) return; // cancelar
+
             try {
                 double valor = Double.parseDouble(valorStr);
+
                 if (valor <= 0) {
-                    JOptionPane.showMessageDialog(null, "Valor inválido");
+                    JOptionPane.showMessageDialog(null, "Ingrese un valor válido");
                     return;
                 }
 
                 saldo += valor;
                 actualizarSaldo();
                 guardarSaldoBD();
-                agregarHistorial("Depósito: $" + valor);
+                agregarHistorial("Depósito de $" + valor);
 
-            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Depósito exitoso\nNuevo saldo: $" + saldo);
+
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Ingrese un número válido");
             }
         });
 
         // RETIRO
         retiroButton.addActionListener(e -> {
-            String valorStr = JOptionPane.showInputDialog("Ingrese valor a retirar:");
+            String valorStr = JOptionPane.showInputDialog(
+                    null,
+                    "Ingrese valor a retirar:",
+                    "Retiro",
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (valorStr == null) return;
+
             try {
                 double valor = Double.parseDouble(valorStr);
+
+                if (valor <= 0) {
+                    JOptionPane.showMessageDialog(null, "Ingrese un valor válido");
+                    return;
+                }
+
                 if (valor > saldo) {
                     JOptionPane.showMessageDialog(null, "Saldo insuficiente");
                     return;
@@ -61,9 +89,12 @@ public class BancoForm {
                 saldo -= valor;
                 actualizarSaldo();
                 guardarSaldoBD();
-                agregarHistorial("Retiro: $" + valor);
+                agregarHistorial("Retiro de $" + valor);
 
-            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Retiro exitoso\nNuevo saldo: $" + saldo);
+
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "Ingrese un número válido");
             }
         });
@@ -75,16 +106,36 @@ public class BancoForm {
             JTextField monto = new JTextField();
 
             Object[] datos = {
-                    "Destinatario:", nombreDestino,
-                    "Monto:", monto
+                    "Nombre del destinatario:", nombreDestino,
+                    "Monto a transferir:", monto
             };
 
-            if (JOptionPane.showConfirmDialog(null, datos,
-                    "Transferencia", JOptionPane.OK_CANCEL_OPTION)
-                    == JOptionPane.OK_OPTION) {
+            int opcion = JOptionPane.showConfirmDialog(
+                    null,
+                    datos,
+                    "Transferencia",
+                    JOptionPane.OK_CANCEL_OPTION
+            );
+
+            if (opcion == JOptionPane.OK_OPTION) {
 
                 try {
+                    String destino = nombreDestino.getText();
+
+                    if (destino.isEmpty()) {
+                        JOptionPane.showMessageDialog(null,
+                                "Ingrese el nombre del destinatario");
+                        return;
+                    }
+
                     double cantidad = Double.parseDouble(monto.getText());
+
+                    if (cantidad <= 0) {
+                        JOptionPane.showMessageDialog(null,
+                                "Ingrese un monto válido");
+                        return;
+                    }
+
                     if (cantidad > saldo) {
                         JOptionPane.showMessageDialog(null, "Saldo insuficiente");
                         return;
@@ -93,17 +144,24 @@ public class BancoForm {
                     saldo -= cantidad;
                     actualizarSaldo();
                     guardarSaldoBD();
-                    agregarHistorial("Transferencia a " +
-                            nombreDestino.getText() + ": $" + cantidad);
+                    agregarHistorial("Transferencia a " + destino + " por $" + cantidad);
 
-                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "Transferencia exitosa a " + destino +
+                                    "\nMonto: $" + cantidad +
+                                    "\nNuevo saldo: $" + saldo);
+
+                } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null, "Monto inválido");
                 }
             }
         });
 
         // SALIR
-        salirButton.addActionListener(e -> System.exit(0));
+        salirButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "¡Gracias por usar el banco!");
+            System.exit(0);
+        });
     }
 
     private void actualizarSaldo() {
@@ -125,7 +183,8 @@ public class BancoForm {
             ps.executeUpdate();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            JOptionPane.showMessageDialog(null,
+                    "Error al actualizar saldo en la base de datos");
         }
     }
 

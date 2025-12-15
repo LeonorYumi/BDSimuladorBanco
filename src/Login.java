@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.sql.*;
-import conexion.ConexionBD;
 
 public class Login {
 
@@ -12,6 +11,8 @@ public class Login {
     private JLabel Contraseña;
     private JButton btnIngresar;
 
+    private int intentos = 0;
+
     public Login() {
 
         btnIngresar.addActionListener(e -> {
@@ -19,7 +20,14 @@ public class Login {
             String usuario = text1.getText();
             String clave = new String(text2.getPassword());
 
-            String sql = "SELECT nombre, saldo FROM usuarios WHERE usuario=? AND password=?";
+            if (usuario.isEmpty() || clave.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                        "Ingrese usuario y contraseña");
+                return;
+            }
+
+            String sql = "SELECT nombre, saldo FROM usuarios " +
+                    "WHERE usuario=? AND password=? AND activo=1";
 
             try (Connection con = ConexionBD.conectar();
                  PreparedStatement ps = con.prepareStatement(sql)) {
@@ -45,13 +53,27 @@ public class Login {
                     SwingUtilities.getWindowAncestor(btnIngresar).dispose();
 
                 } else {
+                    intentos++;
+
                     JOptionPane.showMessageDialog(null,
-                            "Usuario o contraseña incorrectos");
+                            "Usuario o contraseña incorrectos\nIntento "
+                                    + intentos + " de 3");
+
+                    text1.setText("");
+                    text2.setText("");
+
+                    if (intentos >= 3) {
+                        JOptionPane.showMessageDialog(null,
+                                "Acceso bloqueado por demasiados intentos");
+                        btnIngresar.setEnabled(false);
+                    }
                 }
+
+                rs.close();
 
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null,
-                        "Error: " + ex.getMessage());
+                        "Error de conexión con la base de datos");
             }
         });
     }
