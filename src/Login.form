@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Login">
   <grid id="27dc6" binding="PanelLogin" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="10" y="1" width="249" height="139"/>
+      <xy x="10" y="1" width="393" height="278"/>
     </constraints>
     <properties>
       <background color="-8079440"/>

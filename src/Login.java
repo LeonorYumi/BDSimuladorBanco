@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.sql.*;
 
-public class Login {
+public class Login extends JFrame {
 
     private JLabel Inicio;
     private JLabel Usuario;
@@ -14,6 +14,13 @@ public class Login {
     private int intentos = 0;
 
     public Login() {
+
+        setTitle("Inicio de Sesión");
+
+        setContentPane(PanelLogin);
+        setSize(500, 350);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         btnIngresar.addActionListener(e -> {
 
@@ -45,13 +52,12 @@ public class Login {
                     JFrame frame = new JFrame("Banco");
                     BancoForm ventana = new BancoForm(nombre, saldo, usuario);
                     frame.setContentPane(ventana.getBancoPanel());
-                    frame.setSize(600, 450);
+                    frame.setSize(700, 700);
                     frame.setLocationRelativeTo(null);
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     frame.setVisible(true);
 
-                    SwingUtilities.getWindowAncestor(btnIngresar).dispose();
-
+                    dispose();
                 } else {
                     intentos++;
 
@@ -76,9 +82,5 @@ public class Login {
                         "Error de conexión con la base de datos");
             }
         });
-    }
-
-    public JPanel getLoginPanel() {
-        return PanelLogin;
     }
 }

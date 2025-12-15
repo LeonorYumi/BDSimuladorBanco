@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.sql.*;
 
-public class BancoForm {
+public class BancoForm extends JFrame {
 
     private JPanel BancoPanel;
     private JButton depósitoButton;

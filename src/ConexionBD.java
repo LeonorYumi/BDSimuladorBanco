@@ -4,10 +4,9 @@ import java.sql.SQLException;
 
 public class ConexionBD {
 
-    private static final String URL =
-            "jdbc:mysql://localhost:3306/banco";
-    private static final String USER = "root";
-    private static final String PASS = "root";
+    private static final String URL = "jdbc:mysql://uvyw5bigiqdiolrs:nwOv43pTHs78RcHrT7jk@bq3trvid4jvidzlsqm0a-mysql.services.clever-cloud.com:3306/bq3trvid4jvidzlsqm0a";
+    private static final String USER = "uvyw5bigiqdiolrs";
+    private static final String PASS = "nwOv43pTHs78RcHrT7jk";
 
     public static Connection conectar() {
         try {
