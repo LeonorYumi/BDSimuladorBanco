@@ -34,7 +34,7 @@
       </component>
       <component id="f3507" class="javax.swing.JLabel" binding="Inicio">
         <constraints>
-          <grid row="0" column="4" row-span="1" col-span="5" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
+          <grid row="0" column="0" row-span="1" col-span="9" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="102" height="21"/>
           </grid>
           <gridbag top="10" left="10" bottom="10" right="10" weightx="1.0" weighty="1.0"/>
@@ -70,7 +70,7 @@
           <gridbag weightx="1.0" weighty="1.0"/>
         </constraints>
         <properties>
-          <font name="Franklin Gothic Heavy" size="14"/>
+          <font name="Berlin Sans FB Demi" size="14"/>
           <text value="Registrarse"/>
         </properties>
       </component>
